@@ -1,23 +1,76 @@
-<div class="jumbotron">
-  <h1>'Allo, 'Allo!</h1>
-  <p class="lead">
-    <img src="images/yeoman.png" alt="I'm Yeoman"><br>
-    Always a pleasure scaffolding your apps.
-  </p>
-  <p><a class="btn btn-lg btn-success" ng-href="#">Splendid!<span class="glyphicon glyphicon-ok"></span></a></p>
-</div>
+<div id="container" style="width:100%; height:400px;"></div>
+<script type="text/javascript">
+$(function () {
+  Highcharts.setOptions({
+    global: {
+      useUTC: false
+    }
+  });
 
-<div class="row marketing">
-  <h4>HTML5 Boilerplate</h4>
-  <p>
-    HTML5 Boilerplate is a professional front-end template for building fast, robust, and adaptable web apps or sites.
-  </p>
+  $('#container').highcharts({
+    chart: {
+      type: 'spline',
+      animation: Highcharts.svg, // don't animate in old IE
+      marginRight: 10,
+      events: {
+        load: function () {
+          // set up the updating of the chart each second
+          var series = this.series[0];
+          setInterval(function () {
+            var x = (new Date()).getTime(), // current time
+                y = Math.random();
+            series.addPoint([x, y], true, true);
+          }, 1000);
+        }
+      }
+    },
+    title: {
+      text: 'Live random data'
+    },
+    xAxis: {
+      type: 'datetime',
+      tickPixelInterval: 150
+    },
+    yAxis: {
+      title: {
+        text: 'Value'
+      },
+      plotLines: [{
+        value: 0,
+        width: 1,
+        color: '#808080'
+      }]
+    },
+    tooltip: {
+      formatter: function () {
+        return '<b>' + this.series.name + '</b><br/>' +
+        Highcharts.dateFormat('%Y-%m-%d %H:%M:%S', this.x) + '<br/>' +
+        Highcharts.numberFormat(this.y, 2);
+      }
+    },
+    legend: {
+      enabled: false
+    },
+    exporting: {
+      enabled: false
+    },
+    series: [{
+      name: 'Random data',
+      data: (function () {
+        // generate an array of random data
+        var data = [],
+        time = (new Date()).getTime(),
+        i;
 
-  <h4>Angular</h4>
-  <p>
-    AngularJS is a toolset for building the framework most suited to your application development.
-  </p>
-
-  <h4>Karma</h4>
-  <p>Spectacular Test Runner for JavaScript.</p>
-</div>
+        for (i = -19; i <= 0; i += 1) {
+          data.push({
+            x: time + i * 1000,
+            y: Math.random()
+          });
+        }
+        return data;
+      }())
+    }]
+  });
+});
+</script>
